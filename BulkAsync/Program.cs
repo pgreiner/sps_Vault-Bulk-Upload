@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace BulkAsync
 {
@@ -127,19 +125,21 @@ namespace BulkAsync
         static void Main(string[] args)
         {
             Console.WriteLine("This program makes ten asynchronous calls of 100.");
-            Console.Write("Press a key to begin.");
+            Console.Write("Press any key to begin.");
             Console.ReadLine();
-            
+            Console.WriteLine();
+
             DoBulkRequest();
-            
+
             Console.ReadLine();
-            
         }
 
         static async Task DoBulkRequest()
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
+            Console.WriteLine("Starting timer...");
+            Console.WriteLine();
 
             var resp1 = await DoRequest();
             var resp2 = await DoRequest();
@@ -153,7 +153,14 @@ namespace BulkAsync
             var resp0 = await DoRequest();
 
             sw.Stop();
+            Console.WriteLine();
+            Console.WriteLine("Timer stopped.");
+            
             Console.WriteLine("Time elapsed: " + sw.Elapsed.ToString());
+            Console.WriteLine();
+            
+            Console.WriteLine("Press any key to exit.");
+            
         }
 
         static HttpWebRequest CreateRequest()
@@ -163,6 +170,7 @@ namespace BulkAsync
             req.ContentType = "text/xml; charset=utf-8";
             req.Headers.Add("SOAPAction", "https://www.sagepayments.net/web_services/wsVault/wsVault/INSERT_BULK_DATA");
             req.Method = "POST";
+
             // Populate content.
             byte[] reqData = Encoding.UTF8.GetBytes(_bulkRequest);
             Stream reqStream = req.GetRequestStream();
